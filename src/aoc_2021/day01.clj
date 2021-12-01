@@ -1,11 +1,7 @@
 (ns aoc-2021.day01
-  (:require [aoc-2021.core :refer [sum]]))
+  (:require [aoc-2021.core :refer [sum parse-ints]]))
 
-(defn parse
-  []
-  (as-> (slurp "tests/day01.txt") $
-        (clojure.string/split $ #"\n")
-        (map #(Integer/parseInt %) $)))
+(defn parse [] (parse-ints "day01.txt"))
 
 (defn count-inc
   [seq]

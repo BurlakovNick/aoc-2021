@@ -4,3 +4,8 @@
   [sequence]
   (reduce + sequence))
 
+(defn parse-ints
+  [filename]
+  (as-> (slurp (clojure.java.io/resource filename)) $
+        (clojure.string/split $ #"\n")
+        (map #(Integer/parseInt %) $)))
