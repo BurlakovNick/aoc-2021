@@ -1,2 +1,2 @@
-# aoc-2021
-Advent of Code 2021 solutions in Clojure
+# Advent of Code 2021 solutions in Clojure
+
