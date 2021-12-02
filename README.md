@@ -15,3 +15,7 @@ Also - there's `partition` function to get all consequitive groups of given numb
 Solution for second problem can be reused for the first one - just multiply aim by horizontal distance.
 
 It'd better to always use vectors (instead of lists) because of the ease of deconstruction. 
+
+Would be good:
+- To learn how to debug this nightmare of parenthesis. REPL is good, but I seem to use it inproperly
+- To get good with paredit / parinfer, too painful to edit and refactor my code
