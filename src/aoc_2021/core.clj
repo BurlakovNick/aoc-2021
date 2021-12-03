@@ -8,7 +8,7 @@
   [filename]
   (as-> (slurp (clojure.java.io/resource filename)) $
         (clojure.string/split $ #"\n")
-        (map #(Integer/parseInt %) $)))
+        (mapv #(Integer/parseInt %) $)))
 
 
 (defn parse-strings
