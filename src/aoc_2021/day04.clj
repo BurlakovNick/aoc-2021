@@ -34,6 +34,5 @@
         non-drawn-on-board (non-drawn-numbers drawn board round)]
     (* (sum non-drawn-on-board) last-number)))
 
-"Easy"
 (play min-key)
 (play max-key)
