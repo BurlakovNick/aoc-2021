@@ -26,3 +26,7 @@ Today I've learned:
 - `let` is pretty convenient for writing complex calculations
 - the easiest way to transpose matrix is `(apply mapv vector m)`
 - recursive `loop` is much easier to write and understand than generic `reduce`
+
+## Day 04
+
+`contains?` works quite weird for vectors - it works with indexes instead of items [Stack Overflow](https://stackoverflow.com/questions/3249334/test-whether-a-list-contains-a-specific-value-in-clojure)

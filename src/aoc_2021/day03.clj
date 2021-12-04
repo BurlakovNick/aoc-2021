@@ -1,11 +1,8 @@
 (ns aoc-2021.day03
-  (:require [aoc-2021.core :refer [sum parse-strings]])
+  (:require [aoc-2021.core :refer [sum slurp-strings transpose]])
   (:require [clojure.string :refer [starts-with?]]))
 
-(defn parse [] (parse-strings "day03.txt"))
-
-(defn transpose [m]
-  (apply mapv vector m))
+(defn parse [] (slurp-strings "day03.txt"))
 
 (defn most-common [vec]
   (let [freq (frequencies vec)

@@ -1,12 +1,12 @@
 (ns aoc-2021.day02
-  (:require [aoc-2021.core :refer [sum parse-strings]]))
+  (:require [aoc-2021.core :refer [sum slurp-strings]]))
 
 (defn parse-cmd [str]
   (let [[dir step] (clojure.string/split str #" ")]
     (into [] [dir (Integer/parseInt step)])))
 
 (defn parse []
-  (->> (parse-strings "day02.txt")
+  (->> (slurp-strings "day02.txt")
        (map parse-cmd)))
 
 (defn move [[x y aim] [dir step]]

@@ -1,7 +1,7 @@
 (ns aoc-2021.day01
-  (:require [aoc-2021.core :refer [sum parse-ints]]))
+  (:require [aoc-2021.core :refer [sum slurp-ints]]))
 
-(defn parse [] (parse-ints "day01.txt"))
+(defn parse [] (slurp-ints "day01.txt"))
 
 (defn count-inc
   [seq]
@@ -18,4 +18,3 @@
      (partition 3 1)
      (map sum)
      (count-inc))
-
