@@ -5,7 +5,7 @@
   (reduce + sequence))
 
 (defn parse-ints
-  ([str] (parse-ints str #"[, \t]"))
+  ([str] (parse-ints str #"[, \t\-\>]"))
   ([str sep]
    (->> (clojure.string/split str (re-pattern sep))
         (filter not-empty)
