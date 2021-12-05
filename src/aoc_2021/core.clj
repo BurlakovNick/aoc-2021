@@ -35,3 +35,8 @@
 
 (defn is-in? [coll item]
   (some #{item} coll))
+
+(defn irange [left right]
+  (if (< left right)
+    (range left (inc right))
+    (reverse (range right (inc left)))))
