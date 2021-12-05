@@ -30,3 +30,10 @@ Today I've learned:
 ## Day 04
 
 `contains?` works quite weird for vectors - it works with indexes instead of items [Stack Overflow](https://stackoverflow.com/questions/3249334/test-whether-a-list-contains-a-specific-value-in-clojure)
+
+## Day 05
+
+Clojure's `range` is quite dumb - it works only in increasing way (`start < end`), `end` is exclusive.
+Had to implement `smart-range` for the purposes of the task.
+
+`filter` can work with maps! But maps are flattened so each item is represented by an array `[key value]`, interesting.

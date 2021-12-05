@@ -1,12 +1,9 @@
 (ns aoc-2021.day05
   (:require [aoc-2021.core :refer [sum slurp-strings parse-ints]]))
 
-(defn parse []
-  (->> (mapv parse-ints (slurp-strings "day05.txt"))))
+(defn parse [] (mapv parse-ints (slurp-strings "day05.txt")))
 
-(defn is-diagonal? [lx ly rx ry]
-  (and (not= lx rx) (not= ly ry)))
-
+(defn is-diagonal? [lx ly rx ry] (and (not= lx rx) (not= ly ry)))
 (defn not-is-diagonal? [lx ly rx ry] (not (is-diagonal? lx ly rx ry)))
 
 (defn smart-range [left right]
