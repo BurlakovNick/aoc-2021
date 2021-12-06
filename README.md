@@ -37,3 +37,9 @@ Clojure's `range` is quite dumb - it works only in increasing way (`start < end`
 Had to implement `smart-range` for the purposes of the task.
 
 `filter` can work with maps! But maps are flattened so each item is represented by an array `[key value]`, interesting.
+
+## Day 06
+
+`iterate` is a nice way to generate infinite sequence of simulations.
+
+Mutating maps is not pretty, but doable `(assoc freq k (+ old v))` 
