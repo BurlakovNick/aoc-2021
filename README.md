@@ -42,4 +42,16 @@ Had to implement `smart-range` for the purposes of the task.
 
 `iterate` is a nice way to generate infinite sequence of simulations.
 
-Mutating maps is not pretty, but doable `(assoc freq k (+ old v))` 
+~~Mutating maps is not pretty, but doable `(assoc freq k (+ old v))` ~~
+
+There's neat way to update a map:
+
+```
+(defn += [freq k v] (update freq k (fnil + 0) v))
+```
+
+`update` take function to apply on old value, even args can be provided separately (as `v`)
+
+`fnil` is the way to deal with `nil` values - in case an item isn't found in a map, `0` will be used.
+
+Also - there's `reduce-kv` to reduce maps without wrapping key-value pair in `[k v]`
