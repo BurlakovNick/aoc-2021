@@ -5,10 +5,10 @@
 
 (defn dist [x y] (abs (- x y)))
 (defn dist2 [x y] (let [n (dist x y)] (* n (/ (+ 1 n) 2))))
-(defn fuel [target x] (sum (mapv #(dist target %) x)))
-(defn fuel2 [target x] (sum (mapv #(dist2 target %) x)))
 
-(defn min-fuel [f x] (apply min (mapv #(f % x) (range 0 2000))))
+(defn fuel [f target x] (sum (mapv #(f target %) x)))
 
-(min-fuel fuel (parse))
-(min-fuel fuel2 (parse))
+(defn min-fuel [f x] (apply min (mapv #(fuel f % x) (range 0 2000))))
+
+(min-fuel dist (parse))
+(min-fuel dist2 (parse))
