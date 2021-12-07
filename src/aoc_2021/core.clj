@@ -40,3 +40,5 @@
   (if (< left right)
     (range left (inc right))
     (reverse (range right (inc left)))))
+
+(defn abs [n] (max n (- n)))

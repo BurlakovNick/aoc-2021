@@ -55,3 +55,8 @@ There's neat way to update a map:
 `fnil` is the way to deal with `nil` values - in case an item isn't found in a map, `0` will be used.
 
 Also - there's `reduce-kv` to reduce maps without wrapping key-value pair in `[k v]`
+
+## Day 07
+
+When dealing with `Math/abs` Clojure doesn't seem to understand the type and choose right overload :( Sad
+
