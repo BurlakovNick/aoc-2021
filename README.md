@@ -60,3 +60,8 @@ Also - there's `reduce-kv` to reduce maps without wrapping key-value pair in `[k
 
 When dealing with `Math/abs` Clojure doesn't seem to understand the type and choose right overload :( Sad
 
+## Day 08
+
+Clojure exceptions are piece of shit, completely unusable. 
+
+Always ALWAYS use vectors instead of sequences wherever possible!
