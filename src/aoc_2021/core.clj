@@ -1,8 +1,7 @@
 (ns aoc-2021.core)
 
-(defn sum
-  [sequence]
-  (reduce + sequence))
+(defn sum [sequence] (reduce + sequence))
+(defn mul [sequence] (reduce * sequence))
 
 (defn parse-ints
   ([str] (parse-ints str #"[, \t\-\>]"))

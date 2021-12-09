@@ -65,3 +65,21 @@ When dealing with `Math/abs` Clojure doesn't seem to understand the type and cho
 Clojure exceptions are piece of shit, completely unusable. 
 
 Always ALWAYS use vectors instead of sequences wherever possible!
+
+## Day 09
+
+Neat way to get all grid neighbors
+```
+(defn grid-neighbors [[x y]]
+ (->> [[0 -1] [0 1] [-1 0] [1 0]]
+      (mapv #(mapv + [x y] %))
+      (filterv is-in?)))
+```
+
+Since nearly all functions use all the same parameters (map, size), it's easier to calc them once and save
+```
+(def heights (parse))
+(def n (count heights))
+(def m (count (first heights)))
+(def points (for [x (range 0 n) y (range 0 m)] [x y]))
+```
