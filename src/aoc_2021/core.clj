@@ -41,3 +41,5 @@
     (reverse (range right (inc left)))))
 
 (defn abs [n] (max n (- n)))
+
+(defn ch->int [x] (Character/digit x 10))
