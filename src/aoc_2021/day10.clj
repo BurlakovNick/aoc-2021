@@ -1,6 +1,5 @@
 (ns aoc-2021.day10
-  (:require [aoc-2021.core :refer [sum slurp-strings is-in? sum mul median]])
-  (:require [clojure.set]))
+  (:require [aoc-2021.core :refer [sum slurp-strings is-in? sum mul median]]))
 
 (defn parse [] (slurp-strings "day10.txt"))
 
@@ -21,9 +20,8 @@
         (if (is-opening? cur)
           (recur (conj open cur) rest)
           (if (= (closing (last open)) cur)
-            (recur (into [] (drop-last open)) rest)
-            [:bad-char cur])))
-      )))
+            (recur (pop open) rest)
+            [:bad-char cur]))))))
 
 (defn find-errors [type]
   (for [[err x] (mapv spell-check (parse))

@@ -46,4 +46,4 @@
 
 (defn median [coll]
   (let [len (count coll)]
-    (nth (sort coll) (/ len 2))))
+    (nth (sort coll) (quot len 2))))
