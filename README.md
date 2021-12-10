@@ -83,3 +83,13 @@ Since nearly all functions use all the same parameters (map, size), it's easier 
 (def m (count (first heights)))
 (def points (for [x (range 0 n) y (range 0 m)] [x y]))
 ```
+
+## Day 10
+
+List comprehensions can tidy up boring code with deconstruction / map / filtering
+```
+(defn find-errors [type]
+  (for [[err x] (mapv spell-check (parse))
+        :when (= err type)]
+    x))
+```

@@ -43,3 +43,7 @@
 (defn abs [n] (max n (- n)))
 
 (defn ch->int [x] (Character/digit x 10))
+
+(defn median [coll]
+  (let [len (count coll)]
+    (nth (sort coll) (/ len 2))))
