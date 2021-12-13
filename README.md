@@ -93,3 +93,20 @@ List comprehensions can tidy up boring code with deconstruction / map / filterin
         :when (= err type)]
     x))
 ```
+
+## Day 11
+
+Simulation returning a dict comes handy! 
+```
+{:map (flash-to-zero result), :flashes flashes-count}
+```
+
+On the one hand - one can easily pass this dict to `sim` function again, on the other - all the essential things are there to calc the results.
+
+## Day 12
+
+Read the problem description CAREFULLY. Lost a lot of time trying to find a bug when the bug was in my mind - only one cave to be visited twice.
+
+## Day 13
+
+Would been nice to find a visualization lib, but I'm too lazy. 
