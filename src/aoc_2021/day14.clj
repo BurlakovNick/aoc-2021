@@ -3,10 +3,11 @@
 
 (defn parse []
   (let [lines (slurp-strings "day14.txt")
-        start (first lines)
-        insertions (into {} (mapv #(let [[[l r] [rep]] (clojure.string/split % #" -> ")]
-                                     [[l r] rep])
-                                  (drop 2 lines)))]
+        [start _ & rest] lines
+        insertions (->> rest
+                        (mapv #(let [[from [to]] (clojure.string/split % #" -> ")]
+                                 [(into [] from) to]))
+                        (into {}))]
     [start insertions]))
 
 (def input (parse))
@@ -20,19 +21,17 @@
 (defn insert [freq]
   (reduce (fn [result [[left right] cnt]]
             (let [mid (get insertions [left right])]
-              (++= result cnt [[mid right] [left mid]])))
+              (++= result cnt [[left mid] [mid right]])))
           {} freq))
 
 (defn unzip-counts [freq]
-  (let [counts (reduce
-                 (fn [res [[a b] cnt]] (++= res cnt [a b]))
-                 {} freq)
-        fixed (++= counts 1 [(first start) (last start)])]
-    (into {} (mapv (fn [[k v]] [k (quot v 2)]) fixed))))
-
+  (reduce
+    (fn [res [[a b] cnt]] (++= res cnt [a b]))
+    {(first start) 1, (last start) 1}
+    freq))
 
 (let [zipped (zip start)
       result (nth (iterate insert zipped) 40)
       unzipped (unzip-counts result)
       freq (sort (vals unzipped))]
-  (- (last freq) (first freq)))
+  (/ (- (last freq) (first freq)) 2))
