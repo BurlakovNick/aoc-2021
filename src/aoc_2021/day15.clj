@@ -26,16 +26,15 @@
       [(assoc cost k v) (conj (disj queue [(cost k) k]) [v k])])))
 
 (defn find-min-path [n]
-  (loop [visited #{} cost {[0 0] 0} queue (sorted-set [0 [0 0]])]
+  (loop [cost {[0 0] 0} queue (sorted-set [0 [0 0]])]
     (let [[[_ cur] & _] queue]
       (if (not (some? cur))
         (cost [(dec n) (dec n)])
         (let [[cost' queue'] (reduce
                                (fn [res to]
                                  (update-min res to (+ (cost cur) (get-risk to))))
-                               [cost queue] (grid-neighbors cur n))
-              visited' (conj visited cur)]
-          (recur visited' cost' (disj queue' [(cost cur) cur])))))))
+                               [cost queue] (grid-neighbors cur n))]
+          (recur cost' (disj queue' [(cost cur) cur])))))))
 
 (find-min-path (count field))
 (find-min-path (* 5 (count field)))
