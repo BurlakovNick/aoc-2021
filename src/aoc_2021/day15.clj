@@ -9,7 +9,7 @@
 (defn get-risk [[x y]]
   (let [original (ch->int (get-in field [(mod x input-len) (mod y input-len)]))
         shift (+ (quot y input-len) (quot x input-len))]
-    (inc (mod (+ (mod (dec original) 9) shift) 9))))
+    (inc (mod (+ (dec original) shift) 9))))
 
 (defn is-in? [[x y] n] (and (>= x 0) (< x n) (>= y 0) (< y n)))
 
