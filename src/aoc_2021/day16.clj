@@ -83,11 +83,11 @@
 "Easy"
 (sum-versions (first (get-next (hex->bin (parse)))))
 
+"Hard"
 (defn greater-than [a b] (if (> a b) 1 0))
 (defn less-than [a b] (if (< a b) 1 0))
 (defn equal [a b] (if (= a b) 1 0))
 
-"Hard"
 (def type2command
   {0 sum
    1 mul
