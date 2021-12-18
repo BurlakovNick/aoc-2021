@@ -1,4 +1,5 @@
-(ns aoc-2021.day18)
+(ns aoc-2021.day18
+  (:require [clojure.math.combinatorics :refer [permuted-combinations]]))
 
 (defn parse [] (load-file "resources/day18.txt"))
 
@@ -67,8 +68,7 @@
       (not= splitted number) (reduce-number splitted)
       :else number)))
 
-(defn sum [numbers]
-  (reduce (fn [l r] (reduce-number [l r])) (first numbers) (drop 1 numbers)))
+(defn sum [numbers] (reduce (fn [l r] (reduce-number [l r])) numbers))
 
 (defn magnitude [v]
   (if (integer? v)
@@ -79,8 +79,5 @@
 (magnitude (sum (parse)))
 
 "Hard"
-(let [numbers (parse)
-      n (count numbers)
-      pairs (for [i (range 0 n) j (range 0 n) :when (not= i j)]
-              [(nth numbers i) (nth numbers j)])]
+(let [pairs (permuted-combinations (parse) 2)]
   (apply max (map #(magnitude (sum %)) pairs)))
