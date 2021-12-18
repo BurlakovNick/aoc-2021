@@ -40,7 +40,8 @@
 
 (defn explode [v]
   (let [exploding (find-explodes v)]
-    (if (not exploding) v
+    (if (not exploding)
+      v
       (let [prev-pos (dec (:pos exploding))
             next-pos (+ 2 (:pos exploding))
             prev-val (+ (nth-value v (:pos exploding)) (nth-value v prev-pos))
@@ -52,7 +53,8 @@
 
 (defn split [v]
   (let [splitting (find-split v)]
-    (if (not splitting) v
+    (if (not splitting)
+      v
       (let [val (:found splitting)
             left (quot val 2)
             right (+ left (mod val 2))]
