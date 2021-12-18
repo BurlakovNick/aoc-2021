@@ -32,7 +32,7 @@
 (defn find-explodes [v] (find-leaf v (fn [v pos depth] (>= depth 5))))
 (defn find-split [v] (find-leaf v (fn [v pos depth] (>= v 10))))
 
-(defn replace-nth-leaf [n new-val v]
+(defn replace-nth [n new-val v]
   (replace-subtree (fn [l r] (and (= l n) (= r n))) new-val v))
 
 (defn replace-explosion [n new-val v]
@@ -47,8 +47,8 @@
             prev-val (+ (nth-value v (:pos exploding)) (nth-value v prev-pos))
             next-val (+ (nth-value v (inc (:pos exploding))) (nth-value v next-pos))]
         (->> v
-             (replace-nth-leaf prev-pos prev-val)
-             (replace-nth-leaf next-pos next-val)
+             (replace-nth prev-pos prev-val)
+             (replace-nth next-pos next-val)
              (replace-explosion (:pos exploding) 0))))))
 
 (defn split [v]
@@ -58,7 +58,7 @@
       (let [val (:found splitting)
             left (quot val 2)
             right (+ left (mod val 2))]
-        (replace-nth-leaf (:pos splitting) [left right] v)))))
+        (replace-nth (:pos splitting) [left right] v)))))
 
 (defn reduce-number [number]
   (let [exploded (explode number) splitted (split number)]
