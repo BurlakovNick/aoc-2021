@@ -1,6 +1,6 @@
 (ns aoc-2021.day19
   (:require [aoc-2021.core :refer [slurp-strings parse-ints abs sum is-in?]])
-  (:require [clojure.math.combinatorics :refer [cartesian-product combinations permuted-combinations]]))
+  (:require [clojure.math.combinatorics :refer [cartesian-product combinations]]))
 
 (defn parse-block [lines]
   (let [beacons (take-while not-empty (drop 1 lines))]
