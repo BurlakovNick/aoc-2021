@@ -1,7 +1,6 @@
 (ns aoc-2021.day19
-  (:require [aoc-2021.core :refer [slurp-strings parse-ints]]
-            [clojure.set :as set])
-  (:require [clojure.math.combinatorics :refer [cartesian-product]]))
+  (:require [aoc-2021.core :refer [slurp-strings parse-ints abs sum is-in?]])
+  (:require [clojure.math.combinatorics :refer [cartesian-product combinations permuted-combinations]]))
 
 (defn parse-block [lines]
   (let [beacons (take-while not-empty (drop 1 lines))]
@@ -40,28 +39,36 @@
              offset-pair (cartesian-product left-block rotated)]
          (let [offset (sub (first offset-pair) (second offset-pair))
                shifted (shift rotated offset)]
-           {:left    left-block
-            :right   right-block
-            :rotated rotated
-            :shifted shifted
-            :offset  offset
-            :common  (count-same left-block shifted)}))
-       (filterv (fn [x] (>= (:common x) 12)))
+           {:original       right-block
+            :shifted        shifted
+            :offset         offset
+            :common-beacons (count-same left-block shifted)}))
+       (filterv (fn [x] (>= (:common-beacons x) 12)))
        (first)))
 
-(defn remove-block [b blocks]
-  (filterv #(not= b %) blocks))
+(defn remove-block [b blocks] (filterv #(not= b %) blocks))
 
-(defn calc-beacons [blocks]
-  (let [[head & blocks] blocks]
-    (loop [known [head] blocks blocks]
-      (println (count known) (count blocks))
-      (if (empty? blocks)
-        (into #{} (apply concat known))
-        (let [pairs (for [known-block known unknown-block blocks]
-                      [known-block unknown-block])
-              overlapped (first (filter some? (map overlap pairs)))]
-          (recur (conj known (:shifted overlapped)) (remove-block (:right overlapped) blocks)))))))
+(defn calc-map
+  ([blocks]
+   (let [[head & blocks] blocks]
+     (vals (first (calc-map head {head {:shifted head :offset [0 0 0]}} blocks)))))
+  ([v known unknown]
+   (if (empty? unknown)
+     [known unknown]
+     (let [overlaps (filterv some? (mapv #(overlap [v %]) unknown))]
+       (reduce (fn [[k u] o] (calc-map
+                               (:shifted o)
+                               (assoc k (:original o)
+                                        {:shifted (:shifted o)
+                                         :offset (:offset o)})
+                               (remove-block (:original o) u)))
+               [known unknown] overlaps)))))
 
-(count (into #{} (apply concat (parse))))
-(count (calc-beacons (parse)))
+"Easy"
+(count (into #{} (apply concat (mapv :shifted (calc-map (parse))))))
+
+"Hard"
+(defn manhattan [[x y]] (sum (mapv (fn [l r] (abs (- l r))) x y)))
+
+(let [offsets (mapv :offset (calc-map (parse)))]
+  (apply max (mapv manhattan (combinations offsets 2))))
