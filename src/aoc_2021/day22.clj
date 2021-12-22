@@ -19,10 +19,7 @@
 (defn filter-y [commands x] (filter-axis commands 2 x))
 (defn filter-z [commands x] (filter-axis commands 3 x))
 
-(defn is-on? [command]
-  (if (some? command)
-    (= 1 (first command))
-    false))
+(defn is-on? [command] (if (some? command) (= 1 (first command)) false))
 
 (defn unique [xs] (into [] (sort (into #{} (flatten xs)))))
 (defn dense-axis [commands n]
