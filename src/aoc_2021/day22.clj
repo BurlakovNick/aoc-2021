@@ -4,26 +4,25 @@
 (defn parse []
   (->> (slurp-strings "day22.txt")
        (mapv #(first (re-seq #"(\w+) x=(-?\d+)..(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)" %)))
-       (mapv (fn [[_ cmd lx rx ly ry lz rz]]
-               [(if (= cmd "on") 1 0)
-                [(Integer/parseInt lx) (Integer/parseInt rx)]
-                [(Integer/parseInt ly) (Integer/parseInt ry)]
-                [(Integer/parseInt lz) (Integer/parseInt rz)]]))))
+       (map-indexed (fn [[_ cmd lx rx ly ry lz rz]]
+                      [(if (= cmd "on") 1 0)
+                       [(Integer/parseInt lx) (Integer/parseInt rx)]
+                       [(Integer/parseInt ly) (Integer/parseInt ry)]
+                       [(Integer/parseInt lz) (Integer/parseInt rz)]]))))
 
-(defn inside? [[x y z] [lx rx] [ly ry] [lz rz]]
-  (and
-    (>= x lx)
-    (<= x rx)
-    (>= y ly)
-    (<= y ry)
-    (>= z lz)
-    (<= z rz)))
+(defn filter-axis [commands n x]
+  (filter (fn [command] (let [[l r] (nth command n)]
+                          (and (>= x l) (<= x r))))
+          commands))
 
-(defn is-on? [[x y z] commands]
-  (let [last-command (last (filterv (fn [[_ dx dy dz]] (inside? [x y z] dx dy dz)) commands))]
-    (if (some? last-command)
-      (= 1 (first last-command))
-      false)))
+(defn filter-x [commands x] (filter-axis commands 1 x))
+(defn filter-y [commands x] (filter-axis commands 2 x))
+(defn filter-z [commands x] (filter-axis commands 3 x))
+
+(defn is-on? [command]
+  (if (some? command)
+    (= 1 (first command))
+    false))
 
 (defn unique [xs] (into [] (sort (into #{} (flatten xs)))))
 (defn dense-axis [commands n]
@@ -35,10 +34,13 @@
 (defn count-on [commands]
   (let [[xs ys zs] (densed-points commands)]
     (sum (for [[lx rx] (partition 2 1 xs)
+               :let [commands-by-x (filter-x commands lx)]
                [ly ry] (partition 2 1 ys)
+               :let [commands-by-xy (filter-y commands-by-x ly)]
                [lz rz] (partition 2 1 zs)
-               :let [volume (* (- rx lx) (- ry ly) (- rz lz))]
-               :when (is-on? [lx ly lz] commands)]
+               :let [commands-by-xyz (filter-z commands-by-xy lz)
+                     volume (* (- rx lx) (- ry ly) (- rz lz))]
+               :when (is-on? (last commands-by-xyz))]
            volume))))
 
 "Easy"
