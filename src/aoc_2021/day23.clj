@@ -43,12 +43,12 @@
            [amphi p])))
 
 (defn dfs [grid from visited len]
-  (if
+  (cond
     (contains? visited from) visited
-    (let [neighbors (filter #(= \. (get-in grid %)) (grid-neighbors grid from))
-          visited' (assoc visited from len)]
-      (reduce (fn [visited' to] (dfs grid to visited' (inc len)))
-              visited' neighbors))))
+    :else (let [neighbors (filter #(= \. (get-in grid %)) (grid-neighbors grid from))
+                visited' (assoc visited from len)]
+            (reduce (fn [visited' to] (dfs grid to visited' (inc len)))
+                    visited' neighbors))))
 
 (defn reachable [grid from] (dfs grid from {} 0))
 
@@ -67,16 +67,14 @@
                                         (final-chamber? amphipod [nx ny])
                                         (= \# (get-in grid [(inc nx) ny])))))))))
 
-(defn update-min [[cost queue] k v]
+(defn update-min [[cost queue] [k v]]
   (if (not (contains? cost k))
     [(assoc cost k v) (conj queue [v k])]
     (if (< (cost k) v)
       [cost queue]
       [(assoc cost k v) (conj (disj queue [(cost k) k]) [v k])])))
 
-(defn move [grid from to]
-  (let [amphi (get-in grid from)]
-    (modify (modify grid from \.) to amphi)))
+(defn move [grid amphi from to] (modify (modify grid from \.) to amphi))
 
 (defn find-min-path [grid final]
   (loop [cost {grid 0} queue (sorted-set [0 grid]) i 0]
@@ -84,18 +82,15 @@
       (if (= 0 (mod i 1000))
         (println cur-cost))
       (cond
-        (not (some? grid)) (cost final)
         (= grid final) (cost final)
-        :else (let [new-states (for [from (amphipods grid)
-                                     amphi (get-in grid from)
-                                     [to len] (allowed-to-move grid from)
-                                     :let [new-cost (+ cur-cost (* len (get amphi-cost amphi)))
-                                           new-grid (move grid amphi to)]]
-                                 [new-grid new-cost])
-                    [cost' queue'] (reduce
-                                     (fn [res [new-grid new-cost]]
-                                       (update-min res new-grid new-cost))
-                                     [cost queue] new-states)]
+        :else (let [[cost' queue']
+                    (reduce update-min [cost queue]
+                            (for [from (amphipods grid)
+                                  [to len] (allowed-to-move grid from)
+                                  :let [amphi (get-in grid from)
+                                        new-cost (+ cur-cost (* len (get amphi-cost amphi)))
+                                        new-grid (move grid amphi from to)]]
+                              [new-grid new-cost]))]
                 (recur cost' (disj queue' [(cost grid) grid]) (inc i)))))))
 
 
