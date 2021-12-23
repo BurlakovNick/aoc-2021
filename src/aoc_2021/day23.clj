@@ -1,5 +1,5 @@
 (ns aoc-2021.day23
-  (:require [aoc-2021.core :refer [slurp-strings abs sum irange]]))
+  (:require [aoc-2021.core :refer [slurp-strings irange]]))
 
 (defn parse [] (slurp-strings "day23.txt"))
 
@@ -16,11 +16,7 @@
 (defn final-chamber? [amphipod [x y]]
   (and
     (> x 1)
-    (= y (case amphipod
-           \A 3
-           \B 5
-           \C 7
-           \D 9))))
+    (= y (case amphipod \A 3 \B 5 \C 7 \D 9))))
 
 (defn hallway? [[x y]]
   (and (= x 1) (contains? #{1 2 4 6 8 10 11} y)))
@@ -34,12 +30,12 @@
         :when (amphipod? cell)]
     [x y]))
 
-(defn mark-final-amphipods [grid]
+(defn replace-final-amphipods-with-walls [grid]
   (reduce
     (fn [grid [amphi [x y]]]
       (if (and
-            (= (get-in grid [x y]) amphi)
-            (= (get-in grid [(inc x) y]) \#))
+            (= amphi (get-in grid [x y]))
+            (= \# (get-in grid [(inc x) y])))
         (modify grid [x y] \#)
         grid))
     grid (for [amphi [\A \B \C \D]
@@ -51,19 +47,15 @@
     (contains? visited from) visited
     (let [neighbors (filter #(= \. (get-in grid %)) (grid-neighbors grid from))
           visited' (assoc visited from len)]
-      (reduce (fn [visited' to]
-                (dfs grid to visited' (inc len)))
+      (reduce (fn [visited' to] (dfs grid to visited' (inc len)))
               visited' neighbors))))
 
 (defn reachable [grid from] (dfs grid from {} 0))
 
 (def amphi-cost {\A 1 \B 10 \C 100 \D 1000})
-(defn move-cost [grid from len]
-  (let [amphi (get-in grid from)]
-    (* len (get amphi-cost amphi))))
 
 (defn allowed-to-move [grid [x y]]
-  (let [grid (mark-final-amphipods grid)
+  (let [grid (replace-final-amphipods-with-walls grid)
         amphipod (get-in grid [x y])]
     (cond
       (not (amphipod? amphipod)) []
@@ -94,9 +86,10 @@
       (cond
         (not (some? grid)) (cost final)
         (= grid final) (cost final)
-        :else (let [new-states (for [amphi (amphipods grid)
-                                     [to len] (allowed-to-move grid amphi)
-                                     :let [new-cost (+ cur-cost (move-cost grid amphi len))
+        :else (let [new-states (for [from (amphipods grid)
+                                     amphi (get-in grid from)
+                                     [to len] (allowed-to-move grid from)
+                                     :let [new-cost (+ cur-cost (* len (get amphi-cost amphi)))
                                            new-grid (move grid amphi to)]]
                                  [new-grid new-cost])
                     [cost' queue'] (reduce
