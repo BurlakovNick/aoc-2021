@@ -18,11 +18,7 @@
     (> x 1)
     (= y (case amphipod \A 3 \B 5 \C 7 \D 9))))
 
-(defn hallway? [[x y]]
-  (and (= x 1) (contains? #{1 2 4 6 8 10 11} y)))
-
-(defn all-chambers [grid] (into [] (for [x (irange 2 (- (count grid) 2)) y [3 5 7 9]] [x y])))
-(defn final-chamber [grid amphipod] (filterv #(final-chamber? amphipod %) (all-chambers grid)))
+(defn hallway? [[x y]] (and (= x 1) (contains? #{1 2 4 6 8 10 11} y)))
 
 (defn amphipods [grid]
   (for [x (irange 1 (dec (count grid))) y (irange 1 11)
@@ -30,17 +26,12 @@
         :when (amphipod? cell)]
     [x y]))
 
-(defn replace-final-amphipods-with-walls [grid]
-  (reduce
-    (fn [grid [amphi [x y]]]
-      (if (and
-            (= amphi (get-in grid [x y]))
-            (= \# (get-in grid [(inc x) y])))
-        (modify grid [x y] \#)
-        grid))
-    grid (for [amphi [\A \B \C \D]
-               p (reverse (final-chamber grid amphi))]
-           [amphi p])))
+(defn finalized-chamber? [grid [x y]]
+  (let [amphi (get-in grid [x y])
+        down (get-in grid [(inc x) y])]
+    (and (amphipod? amphi)
+         (final-chamber? amphi [x y])
+         (or (= down \#) (finalized-chamber? grid [(inc x) y])))))
 
 (defn dfs [grid from visited len]
   (cond
@@ -55,17 +46,18 @@
 (def amphi-cost {\A 1 \B 10 \C 100 \D 1000})
 
 (defn allowed-to-move [grid [x y]]
-  (let [grid (replace-final-amphipods-with-walls grid)
-        amphipod (get-in grid [x y])]
+  (let [amphipod (get-in grid [x y])]
     (cond
       (not (amphipod? amphipod)) []
+      (finalized-chamber? grid [x y]) []
       (chamber? [x y]) (->> (reachable grid [x y])
                             (filter (fn [[p _]] (hallway? p))))
       (hallway? [x y]) (->> (reachable grid [x y])
                             (filter (fn [[[nx ny] _]]
                                       (and
                                         (final-chamber? amphipod [nx ny])
-                                        (= \# (get-in grid [(inc nx) ny])))))))))
+                                        (or (= \# (get-in grid [(inc nx) ny]))
+                                            (finalized-chamber? grid [(inc nx) ny])))))))))
 
 (defn update-min [[cost queue] [k v]]
   (if (not (contains? cost k))
@@ -82,6 +74,7 @@
       (if (= 0 (mod i 1000))
         (println cur-cost))
       (cond
+        (empty? queue) -1
         (= grid final) (cost final)
         :else (let [[cost' queue']
                     (reduce update-min [cost queue]
