@@ -25,15 +25,8 @@
 (defn hallway? [[x y]]
   (and (= x 1) (contains? #{1 2 4 6 8 10 11} y)))
 
-(def hallway (into [] (for [y [1 2 4 6 8 10 11]] [1 y])))
 (defn all-chambers [grid] (into [] (for [x (irange 2 (- (count grid) 2)) y [3 5 7 9]] [x y])))
 (defn final-chamber [grid amphipod] (filterv #(final-chamber? amphipod %) (all-chambers grid)))
-
-(defn allowed-final-chamber [grid amphipod]
-  (let [finals (final-chamber grid amphipod)]
-    (if (every? #(contains? #{\. amphipod \#} (get-in grid %)) finals)
-      finals
-      [])))
 
 (defn amphipods [grid]
   (for [x (irange 1 (dec (count grid))) y (irange 1 11)
@@ -112,30 +105,34 @@
                                      [cost queue] new-states)]
                 (recur cost' (disj queue' [(cost grid) grid]) (inc i)))))))
 
-(time (find-min-path ["#############"
-                      "#...........#"
-                      "###B#C#B#D###"
-                      "  #A#D#C#A#"
-                      "  #########"]
 
-                     ["#############"
-                      "#...........#"
-                      "###A#B#C#D###"
-                      "  #A#B#C#D#"
-                      "  #########"]))
+(def sample ["#############"
+             "#...........#"
+             "###B#C#B#D###"
+             "  #A#D#C#A#"
+             "  #########"])
 
-(time (find-min-path (parse)
-                     ["#############"
-                      "#...........#"
-                      "###A#B#C#D###"
-                      "  #A#B#C#D#"
-                      "  #########"]))
+(def final ["#############"
+            "#...........#"
+            "###A#B#C#D###"
+            "  #A#B#C#D#"
+            "  #########"])
 
-(time (find-min-path (into [] (concat (take 3 (parse)) ["  #D#C#B#A#" "  #D#B#A#C#"] (drop 3 (parse))))
-                     ["#############"
-                      "#...........#"
-                      "###A#B#C#D###"
-                      "  #A#B#C#D#"
-                      "  #A#B#C#D#"
-                      "  #A#B#C#D#"
-                      "  #########"]))
+(def hard-final ["#############"
+                 "#...........#"
+                 "###A#B#C#D###"
+                 "  #A#B#C#D#"
+                 "  #A#B#C#D#"
+                 "  #A#B#C#D#"
+                 "  #########"])
+
+(defn hardify [grid]
+  (into [] (concat (take 3 grid) ["  #D#C#B#A#" "  #D#B#A#C#"] (drop 3 grid))))
+
+"Easy"
+(time (find-min-path sample final))
+(time (find-min-path (parse) final))
+
+"Hard"
+(time (find-min-path (hardify sample) hard-final))
+(time (find-min-path (hardify (parse)) hard-final))
